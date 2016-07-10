@@ -60,4 +60,6 @@ setup(
             'bmd=bmd:cmd',
         ],
     },
+
+    test_suite = 'test.suite',
 )
