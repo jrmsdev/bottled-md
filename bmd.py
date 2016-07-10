@@ -46,7 +46,7 @@ def gendoc(fpath):
 
 
 def main(outdir = 'htdocs'):
-    """generate html5 files from markdown sources"""
+    """scan current directory for .md files and generate .html docs"""
 
     def writedoc():
         """write html5 file"""
