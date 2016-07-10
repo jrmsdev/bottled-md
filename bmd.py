@@ -122,6 +122,11 @@ def cmd():
     opts, args = parser.parse_args()
 
     if args:
+        # allow source dir templates
+        tpldir = path.abspath(path.join(opts.srcdir, 'templates'))
+        if path.isdir(tpldir):
+            bottle.TEMPLATE_PATH.insert(0, tpldir)
+
         if args[0] == 'scan':
             # generate static docs
             sys.exit(scan(opts.srcdir, opts.dstdir))
