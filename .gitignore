@@ -4,4 +4,6 @@ bottled_md.egg-info/
 build/
 dist/
 htdocs/
-venv/
+htmlcov/
+venv.bmd/
+.coverage
