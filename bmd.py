@@ -53,7 +53,10 @@ def gendoc(fpath, md_extensions = []):
     @tpl_utils
     def htdoc_tail():
         """render htdoc tail template"""
-        return dict(doc_mtime = os.stat(fpath).st_mtime)
+        return dict(
+            doc_mtime = os.stat(fpath).st_mtime,
+            time_now = time.time(),
+        )
 
     # parse markdown file
     buf = io.BytesIO()
