@@ -15,7 +15,9 @@ import mdx
 
 
 # bottle templates dir
-bottle.TEMPLATE_PATH.insert(0, path.dirname(__file__))
+bottle.TEMPLATE_PATH.insert(0, path.join(path.dirname(__file__), 'templates'))
+# static dir
+static_dir = path.join(path.dirname(__file__), 'static')
 
 app = bottle.Bottle()
 bottle.app.push(app)
@@ -39,6 +41,11 @@ def tpl_utils(func):
     wrapped.__doc__ = func.__doc__
 
     return wrapped
+
+
+@bottle.route('/static/<fpath:path>')
+def static(fpath):
+    return bottle.static_file(fpath, root = static_dir)
 
 
 @bottle.route('/<fpath:path>')
@@ -109,6 +116,22 @@ def scan(srcdir, dstdir):
     return 0
 
 
+def sync_static(src, dst):
+    """copy static files from one dir to another (not recursive)"""
+    if path.isdir(src):
+        for f in os.listdir(src):
+            src_f = path.join(src, f)
+            dst_f = path.join(dst, f)
+            if path.isfile(src_f):
+                if not path.isdir(dst):
+                    os.makedirs(dst)
+                with open(dst_f, 'w') as fw:
+                    with open(src_f, 'r') as fr:
+                        fw.write(fr.read())
+                        fr.close()
+                    fw.close()
+
+
 def cmd():
     parser = OptionParser(usage = '%prog [options] scan|serve')
     parser.add_option('-d', '--debug', action = 'store_true', default = False,
@@ -129,14 +152,18 @@ def cmd():
 
         if args[0] == 'scan':
             # generate static docs
-            sys.exit(scan(opts.srcdir, opts.dstdir))
+            scan(opts.srcdir, opts.dstdir)
+            # sync static files
+            for sdir in (static_dir, path.join(opts.srcdir, 'static')):
+                sync_static(sdir, path.join(opts.dstdir, 'static'))
+            sys.exit(0)
         elif args[0] == 'serve':
             # start bottle
             bottle.run(host = 'localhost', port = opts.http,
                     reloader = opts.debug, debug = opts.debug)
         else:
             parser.print_help()
-            sys.exit(1)
+            sys.exit(2)
     else:
         parser.print_help()
         sys.exit(1)
