@@ -174,18 +174,16 @@ def cmd():
             sys.exit(0)
 
         elif args[0] == 'serve':
-            # source static dir
-            sdir = path.abspath(path.join(opts.srcdir, 'static'))
-            if path.isdir(sdir):
-                static_dirs['src'] = sdir
             # start bottle
             bottle.run(host = 'localhost', port = opts.http,
                     reloader = opts.debug, debug = opts.debug)
 
         else:
+            # invalid arg
             parser.print_help()
             sys.exit(2)
     else:
+        # no args
         parser.print_help()
         sys.exit(1)
 
