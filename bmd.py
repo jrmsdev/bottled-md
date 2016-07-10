@@ -97,11 +97,12 @@ def main(srcdir, dstdir):
         with open(dst_f, 'w') as fh:
             fh.write(gendoc(src_f, md_extensions))
             fh.close()
+            print(src_f)
 
     # markdown extensions
     md_extensions = [mdx.MDX()]
 
-    # scan current directory for .md source files
+    # scan source directory for .md source files
     for src_f in glob('%s/**/*.md' % srcdir, recursive = True):
         writedoc()
 
@@ -109,24 +110,31 @@ def main(srcdir, dstdir):
 
 
 def cmd():
-    parser = OptionParser()
+    parser = OptionParser(usage = '%prog [options] scan|serve')
     parser.add_option('-d', '--debug', action = 'store_true', default = False,
             help = 'enable debug options')
-    parser.add_option('-p', '--http', metavar = 'PORT',
-            help = 'start bottle server to dinamically serve content')
+    parser.add_option('-p', '--http', metavar = 'PORT', default = 8880,
+            help = 'bottle http port to bind to (default: 88880)', type = int)
     parser.add_option('-i', '--srcdir', metavar = 'SRCDIR',
             help = "source directory (default: '.')", default = '.')
     parser.add_option('-o', '--dstdir', metavar = 'DSTDIR',
             help = "destination directory (default: 'htdocs')", default = 'htdocs')
-    opts, _ = parser.parse_args()
+    opts, args = parser.parse_args()
 
-    if opts.http:
-        # start bottle
-        bottle.run(host = 'localhost', port = opts.http,
-                reloader = opts.debug, debug = opts.debug)
+    if args:
+        if args[0] == 'scan':
+            # generate static docs
+            sys.exit(main(opts.srcdir, opts.dstdir))
+        elif args[0] == 'serve':
+            # start bottle
+            bottle.run(host = 'localhost', port = opts.http,
+                    reloader = opts.debug, debug = opts.debug)
+        else:
+            parser.print_help()
+            sys.exit(1)
     else:
-        # generate static docs
-        sys.exit(main(opts.srcdir, opts.dstdir))
+        parser.print_help()
+        sys.exit(1)
 
 
 if __name__ == '__main__':
