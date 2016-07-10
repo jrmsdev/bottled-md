@@ -45,7 +45,7 @@ setup(
     install_requires = install_requires,
 
     py_modules = ['bmd', 'mdx'],
-    data_files = [('', ['htdoc_head.html', 'htdoc_tail.html'])],
+    data_files = [('', ['htdoc_head.html', 'htdoc_tail.html', 'VERSION'])],
     zip_safe = False,
 
     entry_points = {
