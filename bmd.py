@@ -9,7 +9,6 @@ from os import path
 from glob import glob
 from markdown import markdownFromFile
 
-#~ from optparse import OptionParser
 
 # bottle templates dir
 bottle.TEMPLATE_PATH.insert(0, path.dirname(__file__))
@@ -67,4 +66,14 @@ def main(outdir = 'htdocs'):
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    from optparse import OptionParser
+
+    parser = OptionParser()
+    parser.add_option('-p', '--http', metavar = 'PORT',
+            help = 'start bottle server to dinamically serve content')
+    opts, _ = parser.parse_args()
+
+    if opts.http:
+        bottle.run(host = 'localhost', port = opts.http, reloader = True)
+    else:
+        sys.exit(main())
