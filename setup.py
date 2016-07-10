@@ -46,7 +46,7 @@ setup(
 
     py_modules = ['bmd', 'mdx'],
     data_files = [
-        ('', ['VERSION']),
+        ('', ['VERSION', 'LICENSE', 'README.md', 'bmd.sh']),
         ('templates', [
             'templates/htdoc_head.html',
             'templates/htdoc_tail.html',
