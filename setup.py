@@ -3,7 +3,13 @@
 
 import sys
 from os import path
-from setuptools import setup, find_packages
+from setuptools import setup
+
+def cat(fpath):
+    with open(fpath, 'r') as fh:
+        blob = fh.read()
+        fh.close()
+    return blob
 
 desc = 'generate static html5 files from markdown sources (or serve dinamically)'
 
@@ -14,7 +20,7 @@ install_requires = [
 
 setup(
     name = 'bottled-md',
-    version = 'v17.6.1',
+    version = cat('VERSION'),
 
     description = desc,
     long_description = desc,
