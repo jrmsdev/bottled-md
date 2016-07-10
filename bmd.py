@@ -83,12 +83,12 @@ def index():
     bottle.abort(404, 'no index document found')
 
 
-def main(outdir = 'htdocs'):
-    """scan current directory for .md files and generate .html docs"""
+def main(srcdir, dstdir):
+    """scan source directory for .md files and generate .html docs in destination"""
 
     def writedoc():
         """write html5 file"""
-        dst_f = path.join(outdir, src_f.replace('.md', '.html'))
+        dst_f = path.join(dstdir, src_f.replace('.md', '.html'))
         try:
             os.makedirs(path.dirname(dst_f))
         except FileExistsError:
@@ -101,7 +101,7 @@ def main(outdir = 'htdocs'):
     md_extensions = [mdx.MDX()]
 
     # scan current directory for .md source files
-    for src_f in glob('**/*.md', recursive = True):
+    for src_f in glob('%s/**/*.md' % srcdir, recursive = True):
         writedoc()
 
     return 0
@@ -115,6 +115,10 @@ if __name__ == '__main__':
             help = 'enable debug options')
     parser.add_option('-p', '--http', metavar = 'PORT',
             help = 'start bottle server to dinamically serve content')
+    parser.add_option('-i', '--srcdir', metavar = 'SRCDIR',
+            help = "source directory (default: '.')", default = '.')
+    parser.add_option('-o', '--dstdir', metavar = 'DSTDIR',
+            help = "destination directory (default: 'htdocs')", default = 'htdocs')
     opts, _ = parser.parse_args()
 
     if opts.http:
@@ -123,4 +127,4 @@ if __name__ == '__main__':
                 reloader = opts.debug, debug = opts.debug)
     else:
         # generate static docs
-        sys.exit(main())
+        sys.exit(main(opts.srcdir, opts.dstdir))
