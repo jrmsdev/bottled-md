@@ -15,7 +15,9 @@ class TestBMD(TestCase):
 
     def test_tpl_utils_timefmt(self):
         f = self.fakeview().get('timefmt')
-        t = f('%Y%m%d %H:%M:%S %z', 1468191315)
+        t = f(1468191315)
+        self.assertEqual(t, 'Sun, 10 Jul 2016 19:55:15 -0300')
+        t = f(1468191315, '%Y%m%d %H:%M:%S %z')
         self.assertEqual(t, '20160710 19:55:15 -0300')
 
     def test_static(self):

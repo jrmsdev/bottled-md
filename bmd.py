@@ -24,7 +24,7 @@ bottle.app.push(app)
 def tpl_utils(func):
     """add utilities to be used on templates"""
 
-    def timefmt(fmt, epoch):
+    def timefmt(epoch, fmt = '%a, %d %b %Y %T %z'):
         t = time.localtime(epoch)
         return time.strftime(fmt, t)
 
