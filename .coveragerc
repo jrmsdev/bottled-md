@@ -1,0 +1,7 @@
+[run]
+source = .
+omit =
+    *_test.py
+    setup.py
+    test.py
+    venv.bmd/*
