@@ -16,8 +16,6 @@ import mdx
 
 # bottle templates dir
 bottle.TEMPLATE_PATH.insert(0, path.join(path.dirname(__file__), 'templates'))
-# static dir
-static_dir = path.join(path.dirname(__file__), 'static')
 
 app = bottle.Bottle()
 bottle.app.push(app)
@@ -43,9 +41,21 @@ def tpl_utils(func):
     return wrapped
 
 
+# list of static dirs: internal and custom
+static_dirs = {
+    'int': path.join(path.dirname(__file__), 'static'),
+    'src': None,
+}
+
 @bottle.route('/static/<fpath:path>')
 def static(fpath):
-    return bottle.static_file(fpath, root = static_dir)
+    # source first, internal otherwise
+    for d in (static_dirs['src'], static_dirs['int']):
+        if d:
+            f = path.join(d, fpath)
+            if path.isfile(f):
+                return bottle.static_file(fpath, root = d)
+    bottle.abort(404, 'file not found: %s' % fpath)
 
 
 @bottle.route('/<fpath:path>')
@@ -150,17 +160,28 @@ def cmd():
         if path.isdir(tpldir):
             bottle.TEMPLATE_PATH.insert(0, tpldir)
 
+        # source static dir
+        sdir = path.abspath(path.join(opts.srcdir, 'static'))
+        if path.isdir(sdir):
+            static_dirs['src'] = sdir
+
         if args[0] == 'scan':
             # generate static docs
             scan(opts.srcdir, opts.dstdir)
             # sync static files
-            for sdir in (static_dir, path.join(opts.srcdir, 'static')):
+            for sdir in static_dirs.values():
                 sync_static(sdir, path.join(opts.dstdir, 'static'))
             sys.exit(0)
+
         elif args[0] == 'serve':
+            # source static dir
+            sdir = path.abspath(path.join(opts.srcdir, 'static'))
+            if path.isdir(sdir):
+                static_dirs['src'] = sdir
             # start bottle
             bottle.run(host = 'localhost', port = opts.http,
                     reloader = opts.debug, debug = opts.debug)
+
         else:
             parser.print_help()
             sys.exit(2)
