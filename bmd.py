@@ -84,7 +84,7 @@ def index():
     bottle.abort(404, 'no index document found')
 
 
-def main(srcdir, dstdir):
+def scan(srcdir, dstdir):
     """scan source directory for .md files and generate .html docs in destination"""
 
     def writedoc():
@@ -124,7 +124,7 @@ def cmd():
     if args:
         if args[0] == 'scan':
             # generate static docs
-            sys.exit(main(opts.srcdir, opts.dstdir))
+            sys.exit(scan(opts.srcdir, opts.dstdir))
         elif args[0] == 'serve':
             # start bottle
             bottle.run(host = 'localhost', port = opts.http,
