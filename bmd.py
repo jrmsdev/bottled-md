@@ -72,6 +72,17 @@ def gendoc(fpath, md_extensions = []):
     return htdoc_head() + buf.read().decode() + htdoc_tail()
 
 
+@bottle.route('/')
+def index():
+    for src in ('index.md', 'README.md'):
+        try:
+            if os.stat(src):
+                return gendoc(src)
+        except FileNotFoundError:
+            pass
+    bottle.abort(404, 'no index document found')
+
+
 def main(outdir = 'htdocs'):
     """scan current directory for .md files and generate .html docs"""
 
@@ -86,6 +97,7 @@ def main(outdir = 'htdocs'):
             fh.write(gendoc(src_f, md_extensions))
             fh.close()
 
+    # markdown extensions
     md_extensions = [mdx.MDX()]
 
     # scan current directory for .md source files
