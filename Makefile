@@ -9,7 +9,7 @@ test:
 
 .PHONY: test-coverage
 test-coverage:
-	@python3 -m coverage run --source='.' setup.py test
+	@python3 -m coverage run --source='.' --omit='venv.bmd/*' setup.py test
 	@python3 -m coverage report
 	@python3 -m coverage html
 
