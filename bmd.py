@@ -74,6 +74,8 @@ if __name__ == '__main__':
     opts, _ = parser.parse_args()
 
     if opts.http:
+        # start bottle
         bottle.run(host = 'localhost', port = opts.http, reloader = True)
     else:
+        # generate static docs
         sys.exit(main())
