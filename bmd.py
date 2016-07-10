@@ -8,6 +8,7 @@ import bottle
 
 from os import path
 from glob import glob
+from optparse import OptionParser
 from markdown import markdownFromFile
 
 import mdx
@@ -107,9 +108,7 @@ def main(srcdir, dstdir):
     return 0
 
 
-if __name__ == '__main__':
-    from optparse import OptionParser
-
+def cmd():
     parser = OptionParser()
     parser.add_option('-d', '--debug', action = 'store_true', default = False,
             help = 'enable debug options')
@@ -128,3 +127,7 @@ if __name__ == '__main__':
     else:
         # generate static docs
         sys.exit(main(opts.srcdir, opts.dstdir))
+
+
+if __name__ == '__main__':
+    cmd()

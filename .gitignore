@@ -1,2 +1,7 @@
 __pycache__/
 *.patch
+bottled_md.egg-info/
+build/
+dist/
+htdocs/
+venv/
