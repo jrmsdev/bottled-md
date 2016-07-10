@@ -20,7 +20,7 @@ install_requires = [
 
 setup(
     name = 'bottled-md',
-    version = cat('VERSION'),
+    version = cat('VERSION').strip(),
 
     description = desc,
     long_description = desc,
