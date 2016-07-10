@@ -9,6 +9,8 @@ from os import path
 from glob import glob
 from markdown import markdownFromFile
 
+import mdx
+
 
 # bottle templates dir
 bottle.TEMPLATE_PATH.insert(0, path.dirname(__file__))
@@ -18,7 +20,7 @@ bottle.app.push(app)
 
 
 @bottle.route('/<fpath:path>')
-def gendoc(fpath):
+def gendoc(fpath, md_extensions = []):
     """generate html doc as string from source markdown file"""
 
     @bottle.view('htdoc_head')
@@ -34,7 +36,8 @@ def gendoc(fpath):
     # parse markdown file
     buf = io.BytesIO()
     try:
-        markdownFromFile(input = fpath, output = buf, output_format = 'html5')
+        markdownFromFile(input = fpath, extensions = md_extensions,
+                output = buf, output_format = 'html5')
     except FileNotFoundError as err:
         bottle.abort(404, str(err))
     else:
@@ -55,8 +58,10 @@ def main(outdir = 'htdocs'):
         except FileExistsError:
             pass
         with open(dst_f, 'w') as fh:
-            fh.write(gendoc(src_f))
+            fh.write(gendoc(src_f, md_extensions))
             fh.close()
+
+    md_extensions = [mdx.MDX()]
 
     # scan current directory for .md source files
     for src_f in glob('**/*.md', recursive = True):
