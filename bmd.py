@@ -34,29 +34,34 @@ def gendoc(fpath):
 
     # parse markdown file
     buf = io.BytesIO()
-    markdownFromFile(input = fpath, output = buf)
-    buf.seek(0, 0)
+    try:
+        markdownFromFile(input = fpath, output = buf, output_format = 'html5')
+    except FileNotFoundError as err:
+        bottle.abort(404, str(err))
+    else:
+        buf.seek(0, 0)
 
     # generate response
     return htdoc_head() + buf.read().decode() + htdoc_tail()
 
 
-def main():
+def main(outdir = 'htdocs'):
     """generate html5 files from markdown sources"""
 
-    def writedoc(fpath):
+    def writedoc():
         """write html5 file"""
-        dst_f = path.join('htdocs', fpath.replace('.md', '.html'))
+        dst_f = path.join(outdir, src_f.replace('.md', '.html'))
         try:
             os.makedirs(path.dirname(dst_f))
         except FileExistsError:
             pass
         with open(dst_f, 'w') as fh:
-            fh.write(gendoc(fpath))
+            fh.write(gendoc(src_f))
             fh.close()
 
+    # scan current directory for .md source files
     for src_f in glob('**/*.md', recursive = True):
-        writedoc(src_f)
+        writedoc()
 
     return 0
 
