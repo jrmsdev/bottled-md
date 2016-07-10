@@ -2,6 +2,7 @@ import re
 from markdown.extensions import Extension
 from markdown.inlinepatterns import LINK_RE, LinkPattern
 
+
 class LocalLinks(LinkPattern):
     exturl_re = re.compile(r'^[^:]+:')
 
