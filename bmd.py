@@ -25,11 +25,9 @@ bottle.app.push(app)
 def tpl_utils(func):
     """add utilities to be used on templates"""
 
-    t = dict(timefmt = utils.timefmt)
-
     def wrapped(*args, **kwargs):
         d = func(*args, **kwargs)
-        d.update(t)
+        d.update(utils.tpl_dict())
         return d
 
     wrapped.__name__ = func.__name__
