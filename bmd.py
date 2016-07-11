@@ -107,19 +107,18 @@ def index():
 
 
 def sync_static(src, dst):
-    """copy static files from one dir to another (not recursive)"""
-    if path.isdir(src):
-        for f in os.listdir(src):
-            src_f = path.join(src, f)
-            dst_f = path.join(dst, f)
-            if path.isfile(src_f):
-                if not path.isdir(dst):
-                    os.makedirs(dst)
-                with open(dst_f, 'w') as fw:
-                    with open(src_f, 'r') as fr:
-                        fw.write(fr.read())
-                        fr.close()
-                    fw.close()
+    """copy static files from src dir to dst (not recursively)"""
+    for f in os.listdir(src):
+        src_f = path.join(src, f)
+        dst_f = path.join(dst, f)
+        if path.isfile(src_f):
+            if not path.isdir(dst):
+                os.makedirs(dst)
+            with open(dst_f, 'w') as fw:
+                with open(src_f, 'r') as fr:
+                    fw.write(fr.read())
+                    fr.close()
+                fw.close()
 
 
 def scan(srcdir, dstdir):

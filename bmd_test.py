@@ -11,9 +11,11 @@ class TestBMD(TestCase):
     def fakeview(self):
         return dict()
 
+    def dirpath(self, dname):
+        return path.join(path.dirname(__file__), 'testdata', dname)
+
     def chdir(self, dname):
-        d = path.join(path.dirname(__file__), 'testdata', dname)
-        os.chdir(d)
+        os.chdir(self.dirpath(dname))
 
     def test_tpl_utils(self):
         d = self.fakeview()
@@ -67,3 +69,24 @@ class TestBMD(TestCase):
         r = cm.exception
         self.assertIsInstance(r, bottle.HTTPResponse)
         self.assertEqual(r.status, '404 Not Found')
+
+    def test_sync_static(self):
+        srcdir = self.dirpath('sync-static')
+        src_f = path.join(srcdir, 'file.txt')
+        dstdir = self.dirpath('sync-static.out')
+        dst_f = path.join(dstdir, 'file.txt')
+        bmd.sync_static(srcdir, dstdir)
+        self.assertEqual(open(src_f, 'r').read(), open(dst_f, 'r').read())
+        os.unlink(dst_f)
+        os.rmdir(dstdir)
+
+    def test_sync_static_nosrc(self):
+        with self.assertRaises(FileNotFoundError):
+            bmd.sync_static(self.dirpath('sync-static.nonexistent'),
+                                        self.dirpath('sync-static.out'))
+
+    def test_sync_static_dsterror(self):
+        srcdir = self.dirpath('sync-static')
+        dstdir = '/nonexistent'
+        with self.assertRaises(PermissionError):
+            bmd.sync_static(srcdir, dstdir)
