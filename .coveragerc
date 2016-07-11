@@ -4,4 +4,5 @@ omit =
     *_test.py
     setup.py
     test.py
+    .eggs/*
     venv.bmd/*

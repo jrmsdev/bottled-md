@@ -7,3 +7,4 @@ htdocs/
 htmlcov/
 venv.bmd/
 .coverage
+.eggs/

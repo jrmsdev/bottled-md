@@ -17,3 +17,4 @@ test-coverage:
 .PHONY: virtualenv
 virtualenv:
 	@python3 -m virtualenv -p python3 venv.bmd
+	@venv.bmd/bin/pip install coverage
