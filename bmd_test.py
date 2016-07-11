@@ -45,7 +45,7 @@ class TestBMD(TestCase):
         self.chdir('gendoc')
         d = bmd.gendoc('index.md')
         self.assertIsInstance(d, str)
-        self.assertEqual(len(d), 372)
+        self.assertEqual(len(d), 373)
 
     def test_gendoc404(self):
         self.chdir('gendoc')
