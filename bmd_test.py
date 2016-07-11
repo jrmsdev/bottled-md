@@ -111,3 +111,11 @@ class TestBMD(TestCase):
         r = bmd.scan(srcdir, dstdir)
         self.assertEqual(r, 0)
         self.rmdir_scanout()
+
+    def test_scan_out_exists(self):
+        srcdir = self.dirpath('gendoc')
+        dstdir = self.dirpath('scan.out')
+        os.makedirs(dstdir)
+        r = bmd.scan(srcdir, dstdir)
+        self.assertEqual(r, 0)
+        self.rmdir_scanout()
