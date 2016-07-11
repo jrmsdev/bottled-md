@@ -23,16 +23,11 @@ bottle.app.push(app)
 
 
 def tpl_utils(func):
-    """add utilities to be used on templates"""
-
+    """decorator: add utilities to be used on templates"""
     def wrapped(*args, **kwargs):
         d = func(*args, **kwargs)
         d.update(utils.tpl_dict())
         return d
-
-    wrapped.__name__ = func.__name__
-    wrapped.__doc__ = func.__doc__
-
     return wrapped
 
 
@@ -58,6 +53,7 @@ def gendoc(fpath, md_extensions = []):
     """generate html doc as string from source markdown file"""
 
     @bottle.view('htdoc_head')
+    @tpl_utils
     def htdoc_head():
         """render htdoc head template"""
         return dict(doc_fpath = fpath)
