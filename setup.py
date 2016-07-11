@@ -44,7 +44,7 @@ setup(
 
     install_requires = install_requires,
 
-    py_modules = ['bmd', 'mdx'],
+    py_modules = ['bmd', 'mdx', 'utils'],
     data_files = [
         ('', ['VERSION', 'LICENSE', 'README.md', 'bmd.sh']),
         ('templates', [

@@ -19,13 +19,6 @@ class TestBMD(TestCase):
         d = self.fakeview()
         self.assertIsInstance(d, dict)
 
-    def test_tpl_utils_timefmt(self):
-        f = self.fakeview().get('timefmt')
-        t = f(1468191315)
-        self.assertEqual(t, 'Sun, 10 Jul 2016 19:55:15 -0300')
-        t = f(1468191315, '%Y%m%d %H:%M:%S %z')
-        self.assertEqual(t, '20160710 19:55:15 -0300')
-
     def test_static(self):
         f = bmd.static('bmd.css')
         self.assertIsInstance(f, bottle.HTTPResponse)

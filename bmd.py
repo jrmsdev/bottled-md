@@ -12,6 +12,7 @@ from optparse import OptionParser
 from markdown import markdownFromFile
 
 import mdx
+import utils
 
 
 # bottle templates dir
@@ -24,15 +25,11 @@ bottle.app.push(app)
 def tpl_utils(func):
     """add utilities to be used on templates"""
 
-    def timefmt(epoch, fmt = '%a, %d %b %Y %T %z'):
-        t = time.localtime(epoch)
-        return time.strftime(fmt, t)
-
-    utils = dict(timefmt = timefmt)
+    t = dict(timefmt = utils.timefmt)
 
     def wrapped(*args, **kwargs):
         d = func(*args, **kwargs)
-        d.update(utils)
+        d.update(t)
         return d
 
     wrapped.__name__ = func.__name__
