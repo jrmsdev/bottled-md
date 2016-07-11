@@ -31,14 +31,14 @@ def tpl_utils(func):
     return wrapped
 
 
-def tpl_data(doc_fpath):
+def tpl_data(doc_path):
     """decorator: common data for templates"""
     def decorator(func):
         def wrapped(*args, **kwargs):
             d = func(*args, **kwargs)
             d.update(dict(
-                doc_fpath = doc_fpath,
-                doc_mtime = os.stat(doc_fpath).st_mtime,
+                doc_path = doc_path,
+                doc_mtime = os.stat(doc_path).st_mtime,
                 time_now = time.time(),
             ))
             return d
@@ -134,10 +134,15 @@ def scan(srcdir, dstdir):
             os.makedirs(path.dirname(dst_f))
         except FileExistsError:
             pass
+
+        # set utils in scan mode
+        utils.scan_mode(dstdir, dst_f)
+
+        # gendoc and write it
         with open(dst_f, 'w') as fh:
             fh.write(gendoc(src_f, md_extensions))
             fh.close()
-            print(src_f, '->', dst_f)
+        print(src_f, '->', dst_f)
 
     # markdown extensions
     md_extensions = [mdx.MDX()]
