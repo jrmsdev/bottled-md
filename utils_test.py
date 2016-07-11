@@ -6,6 +6,9 @@ import utils
 
 class TestUtils(TestCase):
 
+    def setUp(self):
+        utils._G.scan_mode = False
+
     def chdir(self, dname):
         d = path.join(path.dirname(__file__), 'testdata', dname)
         os.chdir(d)

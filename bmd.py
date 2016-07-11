@@ -141,7 +141,6 @@ def scan(srcdir, dstdir):
         with open(dst_f, 'w') as fh:
             fh.write(gendoc(src_f, md_extensions))
             fh.close()
-        print(src_f, '->', dst_f)
 
     # markdown extensions
     md_extensions = [mdx.MDX()]

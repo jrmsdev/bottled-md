@@ -90,3 +90,19 @@ class TestBMD(TestCase):
         dstdir = '/nonexistent'
         with self.assertRaises(PermissionError):
             bmd.sync_static(srcdir, dstdir)
+
+    def rmdir_scanout(self):
+        dstdir = self.dirpath('scan.out')
+        for n in ('static/bmd.css', 'index.html'):
+            f = path.join(dstdir, n)
+            os.unlink(f)
+        for n in ('static', ''):
+            d = path.join(dstdir, n)
+            os.rmdir(d)
+
+    def test_scan(self):
+        srcdir = self.dirpath('gendoc')
+        dstdir = self.dirpath('scan.out')
+        r = bmd.scan(srcdir, dstdir)
+        self.assertEqual(r, 0)
+        self.rmdir_scanout()
