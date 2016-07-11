@@ -96,13 +96,37 @@ def index():
     bottle.abort(404, 'no index document found')
 
 
+def sync_static(src, dst):
+    """copy static files from one dir to another (not recursive)"""
+    if path.isdir(src):
+        for f in os.listdir(src):
+            src_f = path.join(src, f)
+            dst_f = path.join(dst, f)
+            if path.isfile(src_f):
+                if not path.isdir(dst):
+                    os.makedirs(dst)
+                with open(dst_f, 'w') as fw:
+                    with open(src_f, 'r') as fr:
+                        fw.write(fr.read())
+                        fr.close()
+                    fw.close()
+
+
+def static_links_update(dstdir):
+    """update static links on generated docs so they are relative vs absolute"""
+    pass
+
+
 def scan(srcdir, dstdir):
     """scan source directory for .md files and generate .html docs in destination"""
+    print('SCAN:', srcdir, dstdir)
 
     def writedoc():
         """write html5 file"""
-        f = src_f.replace('.md', '.html').replace(srcdir, '', 1)
-        dst_f = path.join(dstdir, f)
+        d = path.dirname(src_f.replace(srcdir, dstdir, 1))
+        f = path.basename(src_f).replace('.md', '.html')
+        dst_f = path.join(d, f)
+        print('WRITEDOC:', srcdir, src_f, dstdir, dst_f)
         try:
             os.makedirs(path.dirname(dst_f))
         except FileExistsError:
@@ -119,23 +143,15 @@ def scan(srcdir, dstdir):
     for src_f in glob('%s/**/*.md' % srcdir, recursive = True):
         writedoc()
 
+    # sync static files
+    for sdir in static_dirs.values():
+        if sdir is not None:
+            sync_static(sdir, path.join(dstdir, 'static'))
+
+    # update static links
+    static_links_update(dstdir)
+
     return 0
-
-
-def sync_static(src, dst):
-    """copy static files from one dir to another (not recursive)"""
-    if path.isdir(src):
-        for f in os.listdir(src):
-            src_f = path.join(src, f)
-            dst_f = path.join(dst, f)
-            if path.isfile(src_f):
-                if not path.isdir(dst):
-                    os.makedirs(dst)
-                with open(dst_f, 'w') as fw:
-                    with open(src_f, 'r') as fr:
-                        fw.write(fr.read())
-                        fr.close()
-                    fw.close()
 
 
 def cmd():
@@ -157,7 +173,7 @@ def cmd():
         if path.isdir(tpldir):
             bottle.TEMPLATE_PATH.insert(0, tpldir)
 
-        # source static dir
+        # register source static dir
         sdir = path.abspath(path.join(opts.srcdir, 'static'))
         if path.isdir(sdir):
             static_dirs['src'] = sdir
@@ -166,15 +182,11 @@ def cmd():
         if args[0] == 'scan':
             # generate static docs
             scan(opts.srcdir, opts.dstdir)
-            # sync static files
-            for sdir in static_dirs.values():
-                if sdir is not None:
-                    sync_static(sdir, path.join(opts.dstdir, 'static'))
             sys.exit(0)
 
         # serve
         elif args[0] == 'serve':
-            # start bottle
+            # chdir and run bottle
             os.chdir(opts.srcdir)
             bottle.run(host = 'localhost', port = opts.http,
                     reloader = opts.debug, debug = opts.debug)
