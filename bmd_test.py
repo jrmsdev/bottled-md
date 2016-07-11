@@ -47,3 +47,23 @@ class TestBMD(TestCase):
         r = cm.exception
         self.assertIsInstance(r, bottle.HTTPResponse)
         self.assertEqual(r.status, '404 Not Found')
+
+    def test_index(self):
+        self.chdir('gendoc')
+        d = bmd.index()
+        self.assertIsInstance(d, str)
+        self.assertEqual(len(d), 373)
+
+    def test_index_readme(self):
+        self.chdir('gendoc-readme')
+        d = bmd.index()
+        self.assertIsInstance(d, str)
+        self.assertEqual(len(d), 375)
+
+    def test_noindex(self):
+        self.chdir('gendoc-noindex')
+        with self.assertRaises(bottle.HTTPError) as cm:
+            bmd.index()
+        r = cm.exception
+        self.assertIsInstance(r, bottle.HTTPResponse)
+        self.assertEqual(r.status, '404 Not Found')
