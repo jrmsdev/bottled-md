@@ -151,8 +151,6 @@ def cmd():
     opts, args = parser.parse_args()
 
     if args:
-        # init utils
-        utils.init(opts)
 
         # allow source dir templates
         tpldir = path.abspath(path.join(opts.srcdir, 'templates'))
