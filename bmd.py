@@ -119,14 +119,12 @@ def static_links_update(dstdir):
 
 def scan(srcdir, dstdir):
     """scan source directory for .md files and generate .html docs in destination"""
-    print('SCAN:', srcdir, dstdir)
 
     def writedoc():
         """write html5 file"""
         d = path.dirname(src_f.replace(srcdir, dstdir, 1))
         f = path.basename(src_f).replace('.md', '.html')
         dst_f = path.join(d, f)
-        print('WRITEDOC:', srcdir, src_f, dstdir, dst_f)
         try:
             os.makedirs(path.dirname(dst_f))
         except FileExistsError:
