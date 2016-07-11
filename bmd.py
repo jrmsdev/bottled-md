@@ -112,11 +112,6 @@ def sync_static(src, dst):
                     fw.close()
 
 
-def static_links_update(dstdir):
-    """update static links on generated docs so they are relative vs absolute"""
-    pass
-
-
 def scan(srcdir, dstdir):
     """scan source directory for .md files and generate .html docs in destination"""
 
@@ -145,9 +140,6 @@ def scan(srcdir, dstdir):
     for sdir in static_dirs.values():
         if sdir is not None:
             sync_static(sdir, path.join(dstdir, 'static'))
-
-    # update static links
-    static_links_update(dstdir)
 
     return 0
 
