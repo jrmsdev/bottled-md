@@ -1,3 +1,5 @@
+# https://github.com/Undeterminant/markdown-newtab/blob/master/markdown_newtab/__init__.py
+
 import re
 from markdown.extensions import Extension
 from markdown.inlinepatterns import LINK_RE, LinkPattern
