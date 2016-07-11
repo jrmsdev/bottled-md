@@ -31,6 +31,21 @@ def tpl_utils(func):
     return wrapped
 
 
+def tpl_data(doc_fpath):
+    """decorator: common data for templates"""
+    def decorator(func):
+        def wrapped(*args, **kwargs):
+            d = func(*args, **kwargs)
+            d.update(dict(
+                doc_fpath = doc_fpath,
+                doc_mtime = os.stat(doc_fpath).st_mtime,
+                time_now = time.time(),
+            ))
+            return d
+        return wrapped
+    return decorator
+
+
 # list of static dirs: internal and custom
 static_dirs = {
     'int': path.join(path.dirname(__file__), 'static'),
@@ -53,19 +68,18 @@ def gendoc(fpath, md_extensions = []):
     """generate html doc as string from source markdown file"""
 
     @bottle.view('htdoc_head')
+    @tpl_data(fpath)
     @tpl_utils
     def htdoc_head():
         """render htdoc head template"""
-        return dict(doc_fpath = fpath)
+        return dict()
 
     @bottle.view('htdoc_tail')
+    @tpl_data(fpath)
     @tpl_utils
     def htdoc_tail():
         """render htdoc tail template"""
-        return dict(
-            doc_mtime = os.stat(fpath).st_mtime,
-            time_now = time.time(),
-        )
+        return dict()
 
     # parse markdown file
     buf = io.BytesIO()
