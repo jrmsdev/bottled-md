@@ -2,6 +2,7 @@
 clean:
 	@./setup.py clean -a
 	@rm -rf __pycache__ bottled_md.egg-info/ build/ dist/ htdocs/ htmlcov/
+	@cd testdata && rm -rf scan.out
 
 .PHONY: test
 test:
