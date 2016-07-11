@@ -153,6 +153,9 @@ def cmd():
     opts, args = parser.parse_args()
 
     if args:
+        # init utils
+        utils.init(opts)
+
         # allow source dir templates
         tpldir = path.abspath(path.join(opts.srcdir, 'templates'))
         if path.isdir(tpldir):
@@ -163,6 +166,7 @@ def cmd():
         if path.isdir(sdir):
             static_dirs['src'] = sdir
 
+        # scan
         if args[0] == 'scan':
             # generate static docs
             scan(opts.srcdir, opts.dstdir)
@@ -172,18 +176,20 @@ def cmd():
                     sync_static(sdir, path.join(opts.dstdir, 'static'))
             sys.exit(0)
 
+        # serve
         elif args[0] == 'serve':
             # start bottle
             os.chdir(opts.srcdir)
             bottle.run(host = 'localhost', port = opts.http,
                     reloader = opts.debug, debug = opts.debug)
 
+        # invalid arg
         else:
-            # invalid arg
             parser.print_help()
             sys.exit(2)
+
+    # no args
     else:
-        # no args
         parser.print_help()
         sys.exit(1)
 
