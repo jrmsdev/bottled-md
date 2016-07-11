@@ -106,7 +106,8 @@ def scan(srcdir, dstdir):
 
     def writedoc():
         """write html5 file"""
-        dst_f = path.join(dstdir, src_f.replace('.md', '.html'))
+        f = src_f.replace('.md', '.html').replace(srcdir, '', 1)
+        dst_f = path.join(dstdir, f)
         try:
             os.makedirs(path.dirname(dst_f))
         except FileExistsError:
@@ -114,7 +115,7 @@ def scan(srcdir, dstdir):
         with open(dst_f, 'w') as fh:
             fh.write(gendoc(src_f, md_extensions))
             fh.close()
-            print(src_f)
+            print(src_f, '->', dst_f)
 
     # markdown extensions
     md_extensions = [mdx.MDX()]
@@ -170,7 +171,8 @@ def cmd():
             scan(opts.srcdir, opts.dstdir)
             # sync static files
             for sdir in static_dirs.values():
-                sync_static(sdir, path.join(opts.dstdir, 'static'))
+                if sdir is not None:
+                    sync_static(sdir, path.join(opts.dstdir, 'static'))
             sys.exit(0)
 
         elif args[0] == 'serve':
