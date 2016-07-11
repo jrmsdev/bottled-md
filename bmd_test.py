@@ -28,6 +28,7 @@ class TestBMD(TestCase):
         self.assertEqual(f.content_type, 'text/css; charset=UTF-8')
         self.assertEqual(f.charset, 'UTF-8')
         self.assertEqual(len(f.body.read()), 561)
+        f.body.close()
 
     def test_static404(self):
         with self.assertRaises(bottle.HTTPError) as cm:
@@ -76,7 +77,11 @@ class TestBMD(TestCase):
         dstdir = self.dirpath('sync-static.out')
         dst_f = path.join(dstdir, 'file.txt')
         bmd.sync_static(srcdir, dstdir)
-        self.assertEqual(open(src_f, 'r').read(), open(dst_f, 'r').read())
+        src_fh = open(src_f, 'r')
+        dst_fh = open(dst_f, 'r')
+        self.assertEqual(src_fh.read(), dst_fh.read())
+        src_fh.close()
+        dst_fh.close()
         os.unlink(dst_f)
         os.rmdir(dstdir)
 
