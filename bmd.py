@@ -177,6 +177,7 @@ def cmd():
 
         elif args[0] == 'serve':
             # start bottle
+            os.chdir(opts.srcdir)
             bottle.run(host = 'localhost', port = opts.http,
                     reloader = opts.debug, debug = opts.debug)
 
