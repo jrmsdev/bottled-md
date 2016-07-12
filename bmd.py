@@ -157,7 +157,7 @@ def scan(srcdir, dstdir):
     return 0
 
 
-def cmd(argv = sys.argv[1:]):
+def cmd(argv = sys.argv[1:], outs = sys.stdout):
     parser = OptionParser(usage = '%prog [options] scan|serve')
     parser.add_option('-d', '--debug', action = 'store_true', default = False,
             help = 'enable debug options')
@@ -169,7 +169,7 @@ def cmd(argv = sys.argv[1:]):
             help = "destination directory (default: 'htdocs')", default = 'htdocs')
     opts, args = parser.parse_args(argv)
 
-    if args:
+    if len(args) == 1:
 
         # allow source dir templates
         tpldir = path.abspath(path.join(opts.srcdir, 'templates'))
@@ -185,7 +185,7 @@ def cmd(argv = sys.argv[1:]):
         if args[0] == 'scan':
             # generate static docs
             scan(opts.srcdir, opts.dstdir)
-            sys.exit(0)
+            return 0
 
         # serve
         elif args[0] == 'serve':
@@ -196,14 +196,13 @@ def cmd(argv = sys.argv[1:]):
 
         # invalid arg
         else:
-            parser.print_help()
-            sys.exit(2)
+            parser.print_help(file = outs)
+            return 2
 
     # no args
-    else:
-        parser.print_help()
-        sys.exit(1)
+    parser.print_help(file = outs)
+    return 1
 
 
 if __name__ == '__main__':
-    cmd()
+    sys.exit(cmd())
