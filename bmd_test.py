@@ -130,7 +130,8 @@ class TestBMD(TestCase):
         self.assertEqual(s, 1)
         devnull.close()
 
-    #~ def test_cmd_scan(self):
-        #~ argv = ['scan', '-i', self.dirpath('gendoc'), '-o', self.dirpath('scan.out')]
-        #~ bmd.cmd(argv)
-        #~ self.rmdir_scanout()
+    def test_cmd_scan(self):
+        argv = ['scan', '-i', self.dirpath('gendoc'), '-o', self.dirpath('scan.out')]
+        r = bmd.cmd(argv)
+        self.assertEqual(r, 0)
+        self.rmdir_scanout()
