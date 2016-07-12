@@ -4,8 +4,12 @@ from unittest import TestCase
 
 import bmd
 import mdx
+import utils
 
 class TestMDX(TestCase):
+
+    def setUp(self):
+        utils._G.scan_mode = False
 
     def dirpath(self, dname):
         return path.join(path.dirname(__file__), 'testdata', dname)
@@ -17,4 +21,4 @@ class TestMDX(TestCase):
         self.chdir('local-links')
         d = bmd.gendoc('index.md', md_extensions = [mdx.MDX()])
         self.assertIsInstance(d, str)
-        self.assertEqual(len(d), 400)
+        self.assertEqual(len(d), 401)

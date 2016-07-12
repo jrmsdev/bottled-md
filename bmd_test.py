@@ -4,8 +4,12 @@ from os import path
 from unittest import TestCase
 
 import bmd
+import utils
 
 class TestBMD(TestCase):
+
+    def setUp(self):
+        utils._G.scan_mode = False
 
     @bmd.tpl_utils
     def fakeview(self):
@@ -120,11 +124,13 @@ class TestBMD(TestCase):
         self.assertEqual(r, 0)
         self.rmdir_scanout()
 
-    #~ def test_cmd(self):
-        #~ bmd.cmd()
-
     def test_cmd_noargs(self):
         devnull = open(os.devnull, 'w')
         s = bmd.cmd(argv = [], outs = devnull)
         self.assertEqual(s, 1)
         devnull.close()
+
+    #~ def test_cmd_scan(self):
+        #~ argv = ['scan', '-i', self.dirpath('gendoc'), '-o', self.dirpath('scan.out')]
+        #~ bmd.cmd(argv)
+        #~ self.rmdir_scanout()
