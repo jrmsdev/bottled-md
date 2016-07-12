@@ -157,7 +157,7 @@ def scan(srcdir, dstdir):
     return 0
 
 
-def cmd():
+def cmd(argv = sys.argv[1:]):
     parser = OptionParser(usage = '%prog [options] scan|serve')
     parser.add_option('-d', '--debug', action = 'store_true', default = False,
             help = 'enable debug options')
@@ -167,7 +167,7 @@ def cmd():
             help = "source directory (default: '.')", default = '.')
     parser.add_option('-o', '--dstdir', metavar = 'DSTDIR',
             help = "destination directory (default: 'htdocs')", default = 'htdocs')
-    opts, args = parser.parse_args()
+    opts, args = parser.parse_args(argv)
 
     if args:
 
