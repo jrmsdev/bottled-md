@@ -119,3 +119,12 @@ class TestBMD(TestCase):
         r = bmd.scan(srcdir, dstdir)
         self.assertEqual(r, 0)
         self.rmdir_scanout()
+
+    #~ def test_cmd(self):
+        #~ bmd.cmd()
+
+    def test_cmd_noargs(self):
+        devnull = open(os.devnull, 'w')
+        s = bmd.cmd(argv = [], outs = devnull)
+        self.assertEqual(s, 1)
+        devnull.close()
