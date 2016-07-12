@@ -130,6 +130,13 @@ class TestBMD(TestCase):
         self.assertEqual(s, 1)
         devnull.close()
 
+    def test_cmd_invalid_arg(self):
+        self.chdir('gendoc')
+        devnull = open(os.devnull, 'w')
+        s = bmd.cmd(argv = ['invalid'], outs = devnull)
+        self.assertEqual(s, 2)
+        devnull.close()
+
     def test_cmd_scan(self):
         argv = ['scan', '-i', self.dirpath('gendoc'), '-o', self.dirpath('scan.out')]
         r = bmd.cmd(argv)
