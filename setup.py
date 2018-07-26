@@ -15,7 +15,7 @@ desc = 'generate static html5 files from markdown sources (or serve dinamically)
 
 install_requires = [
     'bottle>=0.12.9',
-    'markdown>=2.6.6',
+    'Markdown>=2.6.6',
 ]
 
 setup(
