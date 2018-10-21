@@ -67,6 +67,10 @@ def static(fpath):
 def gendoc(fpath, md_extensions = []):
     """generate html doc as string from source markdown file"""
 
+    if not path.isfile (fpath):
+        """check path is a file"""
+        bottle.abort(400, 'invalid file: %s' % fpath)
+
     @bottle.view('htdoc_head')
     @tpl_data(fpath)
     @tpl_utils
