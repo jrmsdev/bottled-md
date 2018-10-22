@@ -53,7 +53,7 @@ class TestBMD(TestCase):
             bmd.gendoc('nonexistent.md')
         r = cm.exception
         self.assertIsInstance(r, bottle.HTTPResponse)
-        self.assertEqual(r.status, '404 Not Found')
+        self.assertEqual('404 Not Found', r.status)
 
     def test_index(self):
         self.chdir('gendoc')

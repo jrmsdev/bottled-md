@@ -69,7 +69,7 @@ def gendoc(fpath, md_extensions = []):
 
     if not path.isfile (fpath):
         """check path is a file"""
-        bottle.abort(400, 'invalid file: %s' % fpath)
+        bottle.abort(404, 'invalid file: %s' % fpath)
 
     # serve static files
     fpath_ext = fpath[-4:]
