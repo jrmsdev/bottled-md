@@ -130,7 +130,7 @@ def sync_static(src, dst):
                 fw.close()
 
 
-def scan(srcdir, dstdir):
+def scan(srcdir, dstdir, debug = False):
     """scan source directory for .md files and generate .html docs in destination"""
 
     def writedoc():
@@ -138,6 +138,10 @@ def scan(srcdir, dstdir):
         d = path.dirname(src_f.replace(srcdir, dstdir, 1))
         f = path.basename(src_f).replace('.md', '.html')
         dst_f = path.join(d, f)
+
+        if debug:
+            print (src_f, '->', dst_f)
+
         try:
             os.makedirs(path.dirname(dst_f))
         except FileExistsError:
@@ -193,7 +197,7 @@ def cmd(argv = sys.argv[1:], outs = sys.stdout):
         # scan
         if args[0] == 'scan':
             # generate static docs
-            scan(opts.srcdir, opts.dstdir)
+            scan(opts.srcdir, opts.dstdir, debug = opts.debug)
             return 0
 
         # serve
