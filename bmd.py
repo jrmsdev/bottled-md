@@ -71,6 +71,11 @@ def gendoc(fpath, md_extensions = []):
         """check path is a file"""
         bottle.abort(400, 'invalid file: %s' % fpath)
 
+    # serve static files
+    fpath_ext = fpath[-4:]
+    if fpath_ext in ('.png', '.txt'):
+        return bottle.static_file(fpath, root = '.')
+
     @bottle.view('htdoc_head')
     @tpl_data(fpath)
     @tpl_utils
