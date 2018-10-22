@@ -63,18 +63,8 @@ def static(fpath):
     bottle.abort(404, 'file not found: %s' % fpath)
 
 
-@bottle.route('/<fpath:path>')
 def gendoc(fpath, md_extensions = []):
     """generate html doc as string from source markdown file"""
-
-    if not path.isfile (fpath):
-        """check path is a file"""
-        bottle.abort(404, 'invalid file: %s' % fpath)
-
-    # serve static files
-    fpath_ext = fpath[-4:]
-    if fpath_ext in ('.png', '.txt'):
-        return bottle.static_file(fpath, root = '.')
 
     @bottle.view('htdoc_head')
     @tpl_data(fpath)
@@ -97,11 +87,23 @@ def gendoc(fpath, md_extensions = []):
                 output = buf, output_format = 'html5')
     except FileNotFoundError as err:
         bottle.abort(404, str(err))
-    else:
-        buf.seek(0, 0)
 
     # generate response
+    buf.seek(0, 0)
     return htdoc_head() + buf.read().decode() + htdoc_tail()
+
+
+@bottle.route('/<fpath:path>')
+def serve_doc(fpath):
+    if not path.isfile (fpath):
+        """check path is a file"""
+        bottle.abort(404, 'file not found: %s' % fpath)
+
+    if fpath[-3:] == '.md':
+        return gendoc(fpath)
+
+    # serve static files
+    return bottle.static_file(fpath, root = '.')
 
 
 @bottle.route('/')
@@ -152,11 +154,8 @@ def scan(srcdir, dstdir, debug = False):
 
         # gendoc and write it
         with open(dst_f, 'w') as fh:
-            fh.write(gendoc(src_f, md_extensions))
+            fh.write(gendoc(src_f, [mdx.MDX()]))
             fh.close()
-
-    # markdown extensions
-    md_extensions = [mdx.MDX()]
 
     # scan source directory for .md source files
     for src_f in glob('%s/**/*.md' % srcdir, recursive = True):
