@@ -92,6 +92,13 @@ def gendoc(fpath, md_extensions = []):
     buf.seek(0, 0)
     return htdoc_head() + buf.read().decode() + htdoc_tail()
 
+def static_mimetype(fpath):
+    mtype = 'application/actet-stream'
+    ext = fpath[-4:]
+    if ext == '.txt' or ext == '.pxd':
+        mtype = 'text/plain'
+    return mtype
+
 
 @bottle.route('/<fpath:path>')
 def serve_doc(fpath):
@@ -103,7 +110,8 @@ def serve_doc(fpath):
         return gendoc(fpath)
 
     # serve static files
-    return bottle.static_file(fpath, root = '.')
+    return bottle.static_file(fpath, root = '.',
+                              mimetype = static_mimetype(fpath))
 
 
 @bottle.route('/')
@@ -203,8 +211,8 @@ def cmd(argv = sys.argv[1:], outs = sys.stdout):
         elif args[0] == 'serve':
             # chdir and run bottle
             os.chdir(opts.srcdir)
-            bottle.run(host = 'localhost', port = opts.http,
-                    reloader = opts.debug, debug = opts.debug)
+            return bottle.run(host = 'localhost', port = opts.http,
+                              reloader = opts.debug, debug = opts.debug)
 
         # invalid arg
         else:
